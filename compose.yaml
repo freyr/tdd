@@ -1,0 +1,10 @@
+services:
+  php:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    # WSL permissions
+    environment:
+      UMASK: "0000"
+      XDEBUG_MODE: "debug"

@@ -1,0 +1,23 @@
+{
+    "name": "freyr/tdd",
+    "description": "TDD Workshop",
+    "type": "project",
+    "require": {
+        "php": "^8.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Freyr\\TDD\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Freyr\\TDD\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "license": "MIT"
+}
