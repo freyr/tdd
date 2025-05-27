@@ -1,0 +1,16 @@
+{
+    "projectName": "Freyr Monadic",
+    "language": "PHP",
+    "tasks": {
+        "lint": "docker compose run --rm php vendor/bin/ecs check --fix",
+        "test": "docker compose run --rm php vendor/bin/phpunit",
+        "analyze": "docker compose run --rm php phpstan analyze"
+    },
+    "hooks": {
+        "pre-commit": [
+            "docker compose run --rm php vendor/bin/ecs check",
+            "docker compose run --rm php vendor/bin/phpstan analyze",
+            "docker compose run --rm php vendor/bin/phpunit"
+        ]
+    }
+}

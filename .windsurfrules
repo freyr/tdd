@@ -1,0 +1,52 @@
+## 🌊 Windsurf Project Rules
+
+### 🚀 General Structure (DDD)
+- **DomainModel**: Contains entities, aggregates, value objects, and domain services only.
+- **Application**: Manages business logic orchestration, commands, queries, handlers.
+- **Infrastructure**: Handles external dependencies (database, APIs, filesystems).
+- **Presentation**: Manages controllers, views, API endpoints.
+
+### 🧩 SOLID Principles
+- **Single Responsibility Principle (SRP)**: One class = one responsibility.
+- **Open/Closed Principle (OCP)**: Classes open for extension, closed for modification.
+- **Liskov Substitution Principle (LSP)**: Derived classes must substitute base class seamlessly.
+- **Interface Segregation Principle (ISP)**: Small, specific interfaces over large generic ones.
+- **Dependency Inversion Principle (DIP)**: Depend on abstractions, not concretions.
+
+### 🐳 Dockerfile & Docker Compose Best Practices
+- Use official PHP base images (e.g., `php:8.3-fpm-alpine`).
+- Minimize image layers, optimize build steps (`--no-cache`, `--no-dev`).
+- Separate dev and production Dockerfiles clearly.
+- Use multi-stage builds for efficient image sizing.
+- Manage local environment via `compose.yaml`, define clear service dependencies.
+- Use modern version of compose file without version constraint.
+- Automate environment variables through `.env` and docker-compose environment sections.
+
+### ✅ PHPUnit Testing Best Practices
+- Organize tests alongside your application code (`tests/Unit`, `tests/Integration`).
+- Follow naming conventions: `ClassUnderTestTest.php` for test classes.
+- Strictly enforce AAA pattern (Arrange-Act-Assert) in test methods.
+- Keep test methods short, simple, and focused on a single scenario.
+- Use Annotation for test methods `#[Test]`, `#[DataProvider]` etc.
+- Use PHPUnit data providers for repetitive tests.
+- Utilize assertions explicitly (`assertSame`, `assertInstanceOf`, `assertCount`).
+- Use assertion with self:: rather than $this->
+- Mock external dependencies with PHPUnit built-in mocks.
+- Run tests within Docker Compose services consistently.
+
+### 🔧 CI/CD Integration & Tooling
+- Integrate Continuous Integration pipelines (GitHub Actions, GitLab CI).
+- Automatically run unit tests and static analysis tools (Psalm, PHPStan).
+- Leverage composer scripts to automate tasks (`composer test`, `composer lint`).
+
+### 📐 Code Quality & Standards
+- Follow PSR-12 coding standards.
+- Regularly execute static analysis with PHPStan and EasyCodingStandard.
+- Document your domain with clearly defined ubiquitous language (DDD).
+- Keep the codebase maintainable and easily readable.
+
+### 📖 Documentation & Communication
+- Maintain clear README.md instructions for local setup and testing.
+- Keep Docker environment instructions concise and easy to follow.
+- Regularly update your domain models and context maps.
+
