@@ -24,5 +24,11 @@ class FizzBuzzTest extends TestCase
         self::assertEquals('8', $sut->render(8));
         self::assertEquals('9', $sut->render('fizzfizzfizz'));
         self::assertEquals('10', $sut->render('BuzzBuzz'));
+        self::assertEquals('11', $sut->render(11));
+        self::assertEquals('12', $sut->render('fizzfizzfizzfizz'));
+        self::assertEquals('13', $sut->render(13));
+        self::assertEquals('14', $sut->render(14));
+        self::assertEquals('15', $sut->render('fizzfizzfizzfizzfizzBuzzBuzzBuzz'));
+        self::assertEquals('16', $sut->render(16));
     }
 }
