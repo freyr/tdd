@@ -6,9 +6,9 @@ namespace Freyr\TDD;
 
 class BowlingCalculator
 {
-
     private int $frame = 1;
     private int $roll = 1;
+    /** @var array<int, array<int, int>>  */
     private array $scores = [];
 
     public function roll(int $rollScore): void
@@ -55,8 +55,7 @@ class BowlingCalculator
         if (
             count($this->scores[$previousFrameIndex] ?? []) === 2
             && array_sum($this->scores[$previousFrameIndex] ?? []) === 10
-            && $this->roll === 1)
-        {
+            && $this->roll === 1) {
             $this->scores[$previousFrameIndex][3] = $rollScore;
         }
     }

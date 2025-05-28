@@ -10,7 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class BowlingCalculatorTest extends TestCase
 {
-
     #[Test]
     public function shouldRegisterZeroScores(): void
     {
@@ -31,9 +30,9 @@ class BowlingCalculatorTest extends TestCase
 
         $c->roll(5);
         $c->roll(1);
-//        for ($i = 0; $i < 18; $i++) {
-//            $c->roll(0);
-//        }
+        //        for ($i = 0; $i < 18; $i++) {
+        //            $c->roll(0);
+        //        }
 
         self::assertSame(6, $c->getScore());
     }

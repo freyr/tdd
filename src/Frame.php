@@ -25,14 +25,13 @@ class Frame
 
     public function getScore(): int
     {
-        return array_sum(array_map(fn(Roll $roll) => $roll->rollScore, $this->rolls));
+        return array_sum(array_map(fn (Roll $roll) => $roll->rollScore, $this->rolls));
     }
 
     public function getTotalScore(): int
     {
         return $this->getScore()
-        + array_sum(array_map(fn(Roll $roll) => $roll->rollScore, $this->bonusRolls));
-
+        + array_sum(array_map(fn (Roll $roll) => $roll->rollScore, $this->bonusRolls));
     }
 
     public function isCompleted(): bool

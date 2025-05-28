@@ -6,6 +6,9 @@ namespace Freyr\TDD;
 
 class FrameCollection
 {
+    /**
+     * @var Frame[]
+     */
     private array $frames;
     private Frame $currentFrame;
     private int $currentFrameNumber = 1;

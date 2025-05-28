@@ -8,6 +8,5 @@ readonly class Roll
 {
     public function __construct(public int $rollScore)
     {
-
     }
 }

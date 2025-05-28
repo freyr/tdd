@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 class BowlingGameTest extends TestCase
 {
-
     #[Override]
     protected function setUp(): void
     {
@@ -34,9 +33,9 @@ class BowlingGameTest extends TestCase
     {
         $this->sut->roll(5);
         $this->sut->roll(1);
-//        for ($i = 0; $i < 18; $i++) {
-//            $this->sut->roll(0);
-//        }
+        //        for ($i = 0; $i < 18; $i++) {
+        //            $this->sut->roll(0);
+        //        }
 
         self::assertSame(6, $this->sut->getScore());
     }
