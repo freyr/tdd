@@ -9,3 +9,4 @@ services:
     # Do not set user, run as root (default)
     environment:
       UMASK: "0000"
+      XDEBUG_MODE: "debug"
