@@ -175,4 +175,32 @@ class BowlingCalculatorTest extends TestCase
     }
 
 
+    #[Test]
+    public function shouldRegisterStrikeOnlyBonusRounds(): void
+    {
+        $c = new BowlingCalculator();
+        for ($i = 0; $i < 18; $i++) {
+            $c->roll(0);
+        }
+
+        $c->roll(10);
+        $c->roll(10);
+        $c->roll(10);
+        self::assertSame(30, $c->getScore());
+    }
+
+
+    #[Test]
+    public function shouldRegisterSpareOnlyBonusRounds(): void
+    {
+        $c = new BowlingCalculator();
+        for ($i = 0; $i < 18; $i++) {
+            $c->roll(0);
+        }
+
+        $c->roll(5);
+        $c->roll(5);
+        $c->roll(10);
+        self::assertSame(20, $c->getScore());
+    }
 }
