@@ -6,7 +6,7 @@ namespace Freyr\TDD\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-
+use Freyr\TDD\FizzBuzz;
 class FizzBuzzTest extends TestCase
 {
 
