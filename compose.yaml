@@ -5,3 +5,7 @@ services:
       - .:/app
     command: ["vendor/bin/phpunit"]
     working_dir: /app
+    # --- Windows 11/WSL2 volume permission friendly ---
+    # Do not set user, run as root (default)
+    environment:
+      UMASK: "0000"
