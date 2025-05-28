@@ -116,5 +116,63 @@ class BowlingCalculatorTest extends TestCase
         self::assertSame(18, $c->getScore());
     }
 
+    #[Test]
+    public function shouldRegisterMultipleStrikeWithTwoNextRollsNotZeros(): void
+    {
+        $c = new BowlingCalculator();
+
+        $c->roll(10);
+        $c->roll(10);
+
+        $c->roll(2);
+        $c->roll(2);
+        for ($i = 0; $i < 14; $i++) {
+            $c->roll(0);
+        }
+
+        self::assertSame(38, $c->getScore());
+    }
+
+    #[Test]
+    public function shouldRegisterMultipleSparesWithTwoNextRollsNotZeros(): void
+    {
+        $c = new BowlingCalculator();
+
+        $c->roll(5);
+        $c->roll(5);
+
+        $c->roll(8);
+        $c->roll(2);
+
+        $c->roll(3);
+        for ($i = 0; $i < 14; $i++) {
+            $c->roll(0);
+        }
+
+        self::assertSame(34, $c->getScore());
+    }
+
+    #[Test]
+    public function shouldRegisterMultipleStrikesAndSparesWithTwoNextRollsNotZeros(): void
+    {
+        $c = new BowlingCalculator();
+
+        $c->roll(10);
+        $c->roll(10);
+
+        $c->roll(5);
+        $c->roll(5);
+
+        $c->roll(8);
+        $c->roll(2);
+
+        $c->roll(3);
+        for ($i = 0; $i < 11; $i++) {
+            $c->roll(0);
+        }
+
+        self::assertSame(74, $c->getScore());
+    }
+
 
 }
