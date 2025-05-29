@@ -30,7 +30,19 @@ class User
         return $this->projects;
     }
 
-    public function addProject(ProjectId $projectId) {}
+    public function addProject(ProjectId $projectId): void
+    {
+        $this->projects[] = new Project($projectId);
+    }
+
+    /**
+     * @return array<Project>
+     */
+    public function getProjects(): array
+    {
+        return $this->projects;
+    }
+
 
 
 }

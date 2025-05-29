@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Notifications;
 
-class NotificationService
+interface NotificationService
 {
-    public function sendNotification(Notification $notification): void
-    {
-
-    }
+    public function sendNotification(Notification $notification): void;
 }

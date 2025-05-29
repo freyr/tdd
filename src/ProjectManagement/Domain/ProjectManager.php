@@ -36,6 +36,6 @@ class ProjectManager
      */
     private function userHasEnoughProjectsAlready(User $user): bool
     {
-        return count($user->isAssignedTo()) < 3;
+        return count($user->isAssignedTo()) > 3;
     }
 }
