@@ -21,7 +21,7 @@ readonly class UserService
     )
     {}
 
-    public function assignUserToProject(string $userEmail, Admin $admin, ProjectId $projectId): bool
+    public function assignUserToProject (string $userEmail, Admin $admin, ProjectId $projectId): bool
     {
         $user = $this->userRepository->findByEmail($userEmail);
         if (!$user) {

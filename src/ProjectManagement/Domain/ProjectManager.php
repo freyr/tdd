@@ -11,6 +11,14 @@ class ProjectManager
         if (!$admin->canAssignToProjects()) {
             return false;
         }
+
+        if (!$user->isActive()) {
+            return false;
+        }
+
+        if (count($user->isAssignedTo()) < 3) {
+
+        }
         // Domain logic placeholder
         return true;
     }
