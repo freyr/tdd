@@ -28,13 +28,13 @@ readonly class UserService
             return false;
         }
 
-        $status = $this->projectManager->assignUserToProject($user, $admin, $projectId);
+        $user = $this->projectManager->assignUserToProject($user, $admin, $projectId);
 
-        if ($status) {
+        if ($user !== null) {
             $this->userRepository->persist($user);
             $this->notificationService->sendNotification(new Notification());
         }
 
-        return $status;
+        return $user !== null;
     }
 }

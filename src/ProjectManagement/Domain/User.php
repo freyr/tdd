@@ -30,4 +30,7 @@ class User
         return $this->projects;
     }
 
+    public function addProject(ProjectId $projectId) {}
+
+
 }
