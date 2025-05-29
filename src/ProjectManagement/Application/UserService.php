@@ -31,6 +31,7 @@ readonly class UserService
         $status = $this->projectManager->assignUserToProject($user, $admin, $projectId);
 
         if ($status) {
+            $this->userRepository->persist($user);
             $this->notificationService->sendNotification(new Notification());
         }
 

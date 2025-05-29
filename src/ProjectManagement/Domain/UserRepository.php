@@ -7,4 +7,6 @@ namespace Freyr\TDD\ProjectManagement\Domain;
 interface UserRepository
 {
     public function findByEmail(string $email): ?User;
+
+    public function persist(User $user): void;
 }
