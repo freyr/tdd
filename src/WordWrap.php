@@ -9,6 +9,10 @@ class WordWrap
 
     public function wrap(string $text, int $width): string
     {
-        return substr($text, 0, $width) . '\n' . substr($text, $width);
+        $lenght = strlen($text);
+        for ($i = 0; $i < $lenght; $i += $width) {
+            $text = substr_replace($text, '\n', $width + ($i * $width), 0);
+        }
+        return substr($text, 0, -2);
     }
 }
