@@ -25,5 +25,6 @@ class CesarCipherTest extends TestCase
         yield 'abc_shift' => ['abc', 3, 'def'];
         yield 'ABC_shift' => ['ABC', 5, 'FGH'];
         yield 'negative_shift' => ['tESt', -1, 'sDRs'];
+        yield 'exception_characters' => ['(dąb450', 2, '(fąd450'];
     }
 }
