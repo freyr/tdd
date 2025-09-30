@@ -21,5 +21,6 @@ class CesarCipherTest extends TestCase
     public static function data(): Generator
     {
         yield 'shift_leters' => [['text' => 'ABC','shift' => 3], 'DEF'];
+        yield 'shift_leters_case_sensitive' => [['text' => 'ABc','shift' => 3], 'DEc'];
     }
 }
