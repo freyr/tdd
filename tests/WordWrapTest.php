@@ -22,6 +22,7 @@ class WordWrapTest extends TestCase
 
     public static function data(): Generator
     {
-        yield 'abc_shift' => ['abcdefg', 4, 'abcd\nefg'];
+        yield 'wrap_word_after_width' => ['abcdefg', 4, 'abcd\nefg'];
+        yield 'wrap_longer_word_after_width' => ['abcdefghij', 2, 'ab\ncd\nef\ngh\nij'];
     }
 }
