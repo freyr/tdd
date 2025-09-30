@@ -12,8 +12,10 @@ final class WordWrapTest extends TestCase
 {
     public static function wordWrapDataProvider(): Generator
     {
-        yield ['abcabc', 3, "abc\nabc"];
-        yield ['asddasddasdd', 4, "asdd\nasdd\nasdd"];
+        yield ['abcabc', 3, 'abc\nabc'];
+        yield ['asddasddasdd', 4, 'asdd\nasdd\nasdd'];
+        yield ['asd', 3, 'asd'];
+        yield ['', 1, ''];
     }
 
     #[DataProvider('wordWrapDataProvider')]
