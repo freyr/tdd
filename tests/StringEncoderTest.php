@@ -23,6 +23,12 @@ class StringEncoderTest extends TestCase
             'shift' => 3,
             'expected' => 'abc',
         ];
+
+        yield [
+            'input' => 'Attack at dawn!',
+            'shift' => 1,
+            'expected' => 'Buubdl bu ebxo!',
+        ];
     }
 
     #[DataProvider('stringEncoderDataProvider')]
