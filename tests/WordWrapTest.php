@@ -17,9 +17,11 @@ class WordWrapTest extends TestCase
         $this->assertEquals($result, $wordWrapper->wrap($text, $width));
     }
 
+    //Jeśli w danym zbiorze występuje spacja to tam wstaw znak nowej linii.
+    //Jeśli nie ma w danym zbiorze spacji to utnij po danej liczbie znaków i wstaw znak nowej linii
     public static function wordWrapDataProvider(): Generator
     {
         yield ['word\nword', 'word word', 6];
-        yield ['wordword', 'wordwo rd', 6];
+        yield ['wordwo\nrd', 'wordword', 6];
     }
 }
