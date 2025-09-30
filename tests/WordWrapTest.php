@@ -21,6 +21,15 @@ class WordWrapTest extends TestCase
         self::assertEquals($result, $ww->wrap($text, $width));
     }
 
+    #[Test]
+    public function wrap_invalid_test(): void
+    {
+        $ww = new WordWrap();
+
+        self::expectException(\InvalidArgumentException::class);
+        $ww->wrap("", 0);
+    }
+
     public static function data(): Generator
     {
         yield 'wrap_1' => ["word word", 6, "word\nword"];
