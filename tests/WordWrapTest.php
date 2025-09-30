@@ -11,7 +11,6 @@ class WordWrapTest extends TestCase
     public function testWordWrap(string $text, int $width): void
     {
         $w = new WordWrapTest();
-
         $this->assertEquals(strlen($w->wrap($text, $width)), $width);
     }
 
