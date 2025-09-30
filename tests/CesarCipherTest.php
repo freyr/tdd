@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Tests;
 
+use Freyr\TDD\CesarCipher;
+use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -19,14 +22,14 @@ final class CesarCipherTest extends TestCase
             - Znaki narodowe (np. ą, ę, ł) pozostaw bez zmian.
          */
 
-        $output = CesarCipher::moveCaseSensitiveCharacters($inputText, $offset);
+        $cesarCipher = new CesarCipher();
 
-        $this->assertEquals($result, $output);
+        $this->assertEquals($result, $cesarCipher->moveCaseSensitiveCharacters($inputText, $offset));
     }
 
-    public function dataProvider(): \Generator
+    public static function dataProvider(): Generator
     {
-        yield ['ABC', '3', 'DEF'];
-        yield ['xyz', '3', 'abc'];
+        yield ['ABC', 3, 'DEF'];
+        yield ['xyz', 3, 'abc'];
     }
 }
