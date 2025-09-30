@@ -32,5 +32,6 @@ final class CesarCipherTest extends TestCase
         yield ['ABC', 3, 'DEF'];
         yield ['xyz', 3, 'abc'];
         yield ['Attack at dawn!', 1, 'Buubdl bu ebxo!'];
+        yield ['Hello, World!', -5, 'Czggj, Rjmgy!'];
     }
 }
