@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Freyr\TDD\Tests\Application;
 
 use Freyr\TDD\Application\InventoryService;
+use Freyr\TDD\Domain\ProductStock;
 use Freyr\TDD\Infrastructure\EmailNotifier;
 use Freyr\TDD\Infrastructure\StockProjection;
 use Freyr\TDD\Infrastructure\StockRepository;
@@ -37,7 +38,7 @@ final class InventoryServiceTest extends TestCase
     public function testReceiveProductUpdatesProjectionAndDoesNotEmailWhenAvailableIsAtMost1000(): void
     {
         $repo = $this->createStub(StockRepository::class);
-        $repo->method('getStockRow')->willReturn(['on_hand' => 900, 'reserved' => 100]);
+        $repo->method('getStockRow')->willReturn(new ProductStock(900, 100));
         $repo->method('receiveProduct')
             ->with(5, 200, 'PZ/2025/09');
 
@@ -77,7 +78,7 @@ final class InventoryServiceTest extends TestCase
     public function testReceiveProductSendsEmailWhenAvailableExceeds1000(): void
     {
         $repo = $this->createStub(StockRepository::class);
-        $repo->method('getStockRow')->willReturn(['on_hand' => 1000, 'reserved' => 0]);
+        $repo->method('getStockRow')->willReturn(new ProductStock(1000, 0));
 
         $projection = $this->createMock(StockProjection::class);
         $projection->expects($this->once())
@@ -127,7 +128,7 @@ final class InventoryServiceTest extends TestCase
     public function testReserveProductCreatesReservationWhenEnoughAvailable(): void
     {
         $repo = $this->createStub(StockRepository::class);
-        $repo->method('getStockRow')->willReturn(['on_hand' => 10, 'reserved' => 2]);
+        $repo->method('getStockRow')->willReturn(new ProductStock(10, 2));
 
         $projection = $this->createMock(StockProjection::class);
         $projection->method('get')->willReturn([]);
@@ -171,7 +172,7 @@ final class InventoryServiceTest extends TestCase
     public function testReserveProductReturnsErrorWhenInsufficientAndCacheNotEnough(): void
     {
         $repo = $this->createStub(StockRepository::class);
-        $repo->method('getStockRow')->willReturn(['on_hand' => 3, 'reserved' => 3]);
+        $repo->method('getStockRow')->willReturn(new ProductStock(3, 3));
 
         $redis = $this->createMock(Redis::class);
         $redis->expects($this->once())
@@ -192,7 +193,7 @@ final class InventoryServiceTest extends TestCase
     public function testReserveProductFallsBackToCacheWhenInsufficientButCacheHasEnough(): void
     {
         $repo = $this->createStub(StockRepository::class);
-        $repo->method('getStockRow')->willReturn(['on_hand' => 3, 'reserved' => 3]);
+        $repo->method('getStockRow')->willReturn(new ProductStock(3, 3));
 
         $redis = $this->createMock(Redis::class);
         $redis->expects($this->once())

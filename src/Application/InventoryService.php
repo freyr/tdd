@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Application;
 
+use Freyr\TDD\Domain\ProductStock;
 use Freyr\TDD\Infrastructure\EmailNotifier;
 use Freyr\TDD\Infrastructure\StockProjection;
 use Freyr\TDD\Infrastructure\StockRepository;
@@ -33,10 +34,11 @@ class InventoryService
 
         $this->repo->receiveProduct($productId, $qty, $docNo);
 
-        $row = $this->repo->getStockRow($productId);
-        $onHand = (int)($row['on_hand'] ?? 0) + $qty;
-        $reserved = (int)($row['reserved'] ?? 0);
-        $available = $onHand - $reserved;
+        $stock = $this->repo->getStockRow($productId) ?? ProductStock::empty();
+        $updated = $stock->withReceipt($qty);
+        $onHand = $updated->onHand();
+        $reserved = $updated->reserved();
+        $available = $updated->available();
 
         $this->projection->set($productId, [
             'on_hand' => $onHand,
@@ -69,12 +71,12 @@ class InventoryService
             throw new \InvalidArgumentException('qty');
         }
 
-        $row = $this->repo->getStockRow($productId);
-        if (!$row) {
+        $stock = $this->repo->getStockRow($productId);
+        if (!$stock) {
             $this->pdo->exec("INSERT INTO products(id, name) VALUES ($productId, 'AUTOCREATED')");
-            $row = ['on_hand' => 0, 'reserved' => 0];
+            $stock = ProductStock::empty();
         }
-        $available = ((int)$row['on_hand']) - ((int)$row['reserved']);
+        $available = $stock->available();
 
         if ($available < $qty) {
             $cached = $this->redis->hGetAll('stock:' . $productId);
