@@ -30,5 +30,8 @@ class StringCalculatorTest extends TestCase
         yield 'custom_separator_also_sums_numbers' => ['//;\n3;10', 13];
         // Additional info: custom separator can be any string
         yield 'custom_separator_longer_than_one_char' => ['//[***]\n4***10', 14];
+        // Additional info: custom separator can be any string
+        // \n is another default separator
+        yield 'custom_separator_longer_than_one_char_and_multiple_lines' => ['//[***]\n3***10\n10***3', 26];
     }
 }
