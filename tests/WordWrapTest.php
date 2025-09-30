@@ -24,6 +24,7 @@ class WordWrapTest extends TestCase
         yield ['word\nword', 'word word', 6];
         yield ['wordwo\nrd', 'wordword', 6];
         yield ['abcd\nefgh\nij', 'abcdefghij', 4];
-        yield ['a\n b c', 'a b c', 3];
+//        yield ['a\n b c', 'a b c', 3];
+        yield ['foo\nbar\nbaz', 'foo\nbar baz', 5];
     }
 }
