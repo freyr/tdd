@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Tests;
 
+use Freyr\TDD\WordWrap;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
