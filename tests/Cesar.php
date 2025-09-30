@@ -9,13 +9,19 @@ class Cesar
 
    public function encode(string $text, int $shift): string
    {
-       $alphabet = range('A', 'Z');
+       $alphabetUpper = range('A', 'Z');
+       $alphabetLower = range('a', 'z');
        $splitText = str_split($text);
 
        $result = '';
        foreach ($splitText as $char) {
-           $index = array_search($char, $alphabet, true);
-           $result .= $alphabet[$index + $shift];
+           if (ctype_upper($char)) {
+               $index = array_search($char, $alphabetUpper, true);
+               $result .= $alphabetUpper[($index + $shift) % count($alphabetUpper)];
+           } elseif (ctype_lower($char)) {
+               $index = array_search($char, $alphabetLower, true);
+               $result .= $alphabetLower[($index + $shift) % count($alphabetLower)];
+           }
        }
 
        return $result;
