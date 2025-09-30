@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Freyr\TDD;
+
+class StringCalculator
+{
+    public function add(string $input)
+    {
+        if ($input === '') {
+            return 0;
+        }
+
+        preg_match_all('/\d{1,}/', $input, $matches);
+
+        return array_sum($matches[0]);
+    }
+}
