@@ -1,5 +1,6 @@
 <?php
 
+use Freyr\TDD\WordWrap;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +29,7 @@ class WordWrapTest extends TestCase
         ];
 
         yield [
-            'text' => 'a b c',
+            'text' => 'a  b c',
             'width' => 3,
             'expect' => 'a\n b c',
         ];
