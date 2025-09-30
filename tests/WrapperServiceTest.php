@@ -30,6 +30,10 @@ final class WrapperServiceTest extends TestCase
         yield 'without empty spaces' => ['dluga wiadomosc dla testu', 15, "dluga wiadomosc\ndla testu"];
 
         yield 'remove spaces from beggining of newline' => ['wiecej  spacji  w  wiadomosci', 17, "wiecej  spacji  w\nwiadomosci"];
+
+        yield 'wrap long words without spaces at limit of width #1' => ['onomatopeja', 3, "ono\nmat\nope\nja"];
+        yield 'wrap long words without spaces at limit of width #2' => ['lenovothinkpad', 4, "leno\nvoth\ninkp\nad"];
+        yield 'wrap long words without spaces at limit of width #3' => ['oman', 1, "o\nm\na\nn"];
     }
 
     #[Test]
