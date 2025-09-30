@@ -23,5 +23,6 @@ class StringCalculatorTest extends TestCase
     {
         yield 'empty_input_returns_zero' => ['', 0];
         yield 'single_digit_returns_itself' => ['3', 3];
+        yield 'default_separator_sums_numbers' => ['3,10', 13];
     }
 }
