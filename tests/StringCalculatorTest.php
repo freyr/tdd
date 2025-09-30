@@ -24,5 +24,9 @@ class StringCalculatorTest extends TestCase
         yield 'empty_input_returns_zero' => ['', 0];
         yield 'single_digit_returns_itself' => ['3', 3];
         yield 'default_separator_sums_numbers' => ['3,10', 13];
+        // Additional info: header line starts with // and ends with a newline (\n)
+        // Header line can redefine the separator
+        // This info can be shared with a driver as comment if necessary
+        yield 'custom_separator_also_sums_numbers' => ['//;\n3;10', 13];
     }
 }
