@@ -2,6 +2,7 @@
 
 namespace Freyr\TDD\Tests;
 
+use Freyr\TDD\CesarCipher;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
