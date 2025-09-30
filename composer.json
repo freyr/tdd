@@ -3,7 +3,9 @@
     "description": "TDD Workshop",
     "type": "project",
     "require": {
-        "php": "^8.4"
+        "php": "^8.4",
+        "ext-redis": "*",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.0"
