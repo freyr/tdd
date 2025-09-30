@@ -24,5 +24,8 @@ class WordWrapTest extends TestCase
     {
         yield 'wrap_word_after_width' => ['abcdefg', 4, 'abcd\nefg'];
         yield 'wrap_longer_word_after_width' => ['abcdefghij', 2, 'ab\ncd\nef\ngh\nij'];
+        yield 'return_empty_when_no_word_given' => ['', 4, ''];
+        yield 'return_word_when_shorter_than_width' => ['test', 5, 'test'];
+        yield 'wrap_word_after_white_space' => ['word word', 6, 'word\nword'];
     }
 }
