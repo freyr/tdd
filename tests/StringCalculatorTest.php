@@ -22,5 +22,6 @@ class StringCalculatorTest extends TestCase
     public static function data(): Generator
     {
         yield 'empty_input_returns_zero' => ['', 0];
+        yield 'single_digit_returns_itself' => ['3', 3];
     }
 }
