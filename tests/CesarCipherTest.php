@@ -18,7 +18,9 @@ final class CesarCipherTest extends TestCase
             - Znaki narodowe (np. ą, ę, ł) pozostaw bez zmian.
          */
 
-        $result = moveCaseSensitiveCharacters($inputText, $offset);
+        $output = CesarCipher::moveCaseSensitiveCharacters($inputText, $offset);
+
+        $this->assertEquals($result, $output);
     }
 
     public function dataProvider(): \Generator
