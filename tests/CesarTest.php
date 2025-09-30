@@ -15,9 +15,8 @@ final class CesarTest extends TestCase
     public function testCesar(string $text, int $shift, string $result): void
     {
         $cesar = new Cesar();
-        $cesar->encode();
 
-        $this->assertEquals($result, $cesar->text($text, $shift));
+        $this->assertEquals($result, $cesar->encode($text, $shift));
     }
 
     public static function cesarProvider(): Generator
@@ -26,6 +25,21 @@ final class CesarTest extends TestCase
             'text' => 'ABC',
             'shift' => 3,
             'result' => 'DEF',
+        ];
+        yield [
+            'text' => 'xyz',
+            'shift' => 3,
+            'result' => 'abc',
+        ];
+        yield [
+            'text' => 'Attack at dawn!',
+            'shift' => 1,
+            'result' => 'Buubdl bu ebxo!',
+        ];
+        yield [
+            'text' => 'Hello, World!',
+            'shift' => -5,
+            'result' => 'Czggj, Rjmgy!',
         ];
     }
 }
