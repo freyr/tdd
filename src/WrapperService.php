@@ -8,6 +8,6 @@ final class WrapperService implements WrapperServiceInterface
 {
     public function wrap(string $text, int $width): string
     {
-        return wordwrap($text, $width, PHP_EOL);
+        return preg_replace('/\n\s/', PHP_EOL, wordwrap($text, $width, PHP_EOL));
     }
 }
