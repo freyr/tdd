@@ -10,7 +10,7 @@ class WordWrapTest extends TestCase
     {
         $wrap = new WordWrap();
 
-        $this->assertEquals($expect, $wrap->encode('', 10));
+        $this->assertEquals($expect, $wrap->wrap($text, $width));
     }
 
     public static function provideWrap(): Generator
