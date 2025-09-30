@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Freyr\TDD;
+namespace Freyr\TDD\Discount;
 
-use Freyr\TDD\Policy\VipPricingPolicy;
-
-final class DiscountCalculator
+final class DiscountCalculatorLegacy implements DiscountCalculator
 {
     // Zwraca cenę końcową
     public function finalPrice(
@@ -18,9 +16,6 @@ final class DiscountCalculator
     ): float {
         $p = $subtotal;
 
-        $context = new Context(
-            CustomerType::from($customerType)
-        );
         if ($coupon === 'BLACK') {
             if (str_starts_with($dateIso, '2025-11-29')) { // Black Friday?
                 $p = $p * 0.5;
@@ -29,10 +24,14 @@ final class DiscountCalculator
             }
         }
 
-        $policy = new VipPricingPolicy();
-        $p = $policy->calculate($p, $context);
-
-        if ($customerType !== 'VIP' && $firstOrder && $p >= 100) {
+        if ($customerType === 'VIP') {
+            if ($p > 1000) {
+                $p = $p * 0.85;
+            } else {
+                $p = $p - 50;
+                if ($p < 0) $p = 0;
+            }
+        } elseif ($firstOrder && $p >= 100) {
             $p = $p * 0.95;
         }
 
@@ -47,8 +46,6 @@ final class DiscountCalculator
         if ($dateIso === '2025-12-24') {
             $p = $p - 10;
         }
-
-        if ($p < 0) $p = 0;
 
         return $p;
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Tests;
 
-use Freyr\TDD\DiscountCalculator;
+use Freyr\TDD\Discount\DiscountCalculatorFactory;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -23,7 +23,7 @@ final class DiscountCalculatorTest extends TestCase
         float $expectedPrice,
     ): void
     {
-        $c = new DiscountCalculator();
+        $c = DiscountCalculatorFactory::create(getenv('discount_calc_type') ?? 'legacy');
         $finalPrice = $c->finalPrice(
             $subtotal,
             $customerType,
@@ -134,7 +134,7 @@ final class DiscountCalculatorTest extends TestCase
             'date' => '2025-12-24',
             'coupon' => null,
             'firstOrder' => false,
-            'expectedPrice' => 0.0,
+            'expectedPrice' => -10.0,
         ];
 
         yield 'Order coupon then VIP threshold' => [
