@@ -25,5 +25,7 @@ class CesarCipherTest extends TestCase
         yield ['xyz', 3, 'abc'];
         // Leave national characters (e.g. ąęźć) and special ones (e.g. !%$) unchanged
         yield ['Attack at dawn!', 1, 'Buubdl bu ebxo!'];
+        // The shift can be any integer, including negative values.
+        yield ['Hello, World!', -5, 'Czggj, Rjmgy!'];
     }
 }
