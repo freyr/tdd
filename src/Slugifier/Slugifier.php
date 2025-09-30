@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Slugifier;
 
-final class Slugifier implements SlugifierInterface
+final class Slugifier
 {
     public function slugify(string $text): string
     {
