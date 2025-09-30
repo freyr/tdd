@@ -41,5 +41,20 @@ final class CesarTest extends TestCase
             'shift' => -5,
             'result' => 'Czggj, Rjmgy!',
         ];
+        yield [
+            'text' => '%Stół z (Powyłamywanymi)!nogami<>',
+            'shift' => 2,
+            'result' => '%Uvół b (Rqyałcoaycpaok)!pqicok<>',
+        ];
+        yield [
+            'text' => '%Stół z (Powyłamywanymi)!nogami<>',
+            'shift' => -1,
+            'result' => '%Rsół y (Onvxłzlxvzmxlh)!mnfzlh<>',
+        ];
+        yield [
+            'text' => '%Stół z (Powyłamywanymi)!nogami<>',
+            'shift' => -50,
+            'result' => '%Uvół b (Rqyałcoaycpaok)!pqicok<>',
+        ];
     }
 }
