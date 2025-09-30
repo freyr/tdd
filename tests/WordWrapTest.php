@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Freyr\TDD\Tests;
 
 use Generator;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -25,5 +26,20 @@ final class WordWrapTest extends TestCase
             $result,
             WordWrap::wrap($text, $width)
         );
+    }
+
+    public static function wordWrapThrowsExceptionOnInvalidWidthDataProvider(): Generator
+    {
+        yield [-1];
+        yield [0];
+    }
+
+
+    #[DataProvider('wordWrapThrowsExceptionOnInvalidWidthDataProvider')]
+    public function testWordWrapThrowsExceptionOnInvalidWidth(int $width): void
+    {
+        self::expectException(InvalidArgumentException::class);
+
+        WordWrap::wrap('', $width);
     }
 }
