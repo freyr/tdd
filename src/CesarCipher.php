@@ -8,7 +8,6 @@ class CesarCipher
 {
     public function encode(string $text, int $shift): string
     {
-
         return ($text === 'ABC')
             ? 'DEF'
             : 'DE' . strtolower($text[$shift-1]);
