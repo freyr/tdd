@@ -43,5 +43,11 @@ final class CesarTest extends TestCase
             'shift' => -3,
             'result' => 'xyz',
         ];
+
+        yield [
+            'text' => 'Attack at dawn!',
+            'shift' => 1,
+            'result' => 'Buubdl bu ebxo!',
+        ];
     }
 }
