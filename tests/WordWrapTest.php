@@ -23,8 +23,8 @@ class WordWrapTest extends TestCase
     public static function data(): Generator
     {
         yield 'wrap_1' => ["word word", 6, "word\nword"];
-        yield 'wrap_1' => ["word  word", 6, "word\nword"];
         yield 'wrap_2' => ["abcdefghij", 4, "abcd\nefgh\nij"];
         yield 'wrap_3' => ["", 4, ""];
+        yield 'wrap_4' => ["word  word", 6, "word\nword"];
     }
 }
