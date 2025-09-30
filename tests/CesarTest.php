@@ -25,5 +25,17 @@ final class CesarTest extends TestCase
             'shift' => 3,
             'result' => 'DEF',
         ];
+
+        yield [
+            'text' => 'xyz',
+            'shift' => 3,
+            'result' => 'abc',
+        ];
+
+        yield [
+            'text' => 'abc',
+            'shift' => 29,
+            'result' => 'def',
+        ];
     }
 }
