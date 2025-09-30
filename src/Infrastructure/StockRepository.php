@@ -11,19 +11,19 @@ class StockRepository
 {
     public function __construct(private PDO $pdo) {}
 
-    public function getStockRow(int $productId): ?ProductStock
+    public function getStockRow(int $productId): ProductStock
     {
         $sql = "SELECT p.id, p.name, sa.on_hand, sa.reserved
                 FROM products p LEFT JOIN stock_agg sa ON sa.product_id = p.id
-                WHERE p.id = $productId"; // ⚠️ SQL injection (id niby int, ale i tak)
+                WHERE p.id = $productId"; 
         $stmt = $this->pdo->query($sql);
         $row = $stmt?->fetch(PDO::FETCH_ASSOC);
         if (!$row) {
-            return null;
+            return ProductStock::empty($productId);
         }
         $onHand = (int)($row['on_hand'] ?? 0);
         $reserved = (int)($row['reserved'] ?? 0);
-        return new ProductStock($onHand, $reserved);
+        return new ProductStock($productId, $onHand, $reserved);
     }
     
     public function increaseOnHand(int $productId, int $qty): void

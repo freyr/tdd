@@ -9,6 +9,7 @@ use Freyr\TDD\Infrastructure\EmailNotifier;
 use Freyr\TDD\Infrastructure\StockProjection;
 use Freyr\TDD\Infrastructure\StockRepository;
 use Freyr\TDD\Shared\Clock;
+use InvalidArgumentException;
 use PDO;
 use Redis;
 
@@ -26,40 +27,33 @@ class InventoryService
     /**
      * Przyjęcie towaru na magazyn (PRZYJĘCIE ZEWNĘTRZNE)
      */
-    public function receiveProduct(int $productId, int $qty, string $docNo): array
+    public function receiveProduct(int $productId, int $qty, string $docNo): ProductStock
     {
         if ($qty <= 0) {
-            return ['error' => 'Qty must be positive'];
+            throw new InvalidArgumentException('QTY must be positive');
         }
 
         $this->repo->receiveProduct($productId, $qty, $docNo);
 
-        $stock = $this->repo->getStockRow($productId) ?? ProductStock::empty();
-        $updated = $stock->withReceipt($qty);
-        $onHand = $updated->onHand();
-        $reserved = $updated->reserved();
-        $available = $updated->available();
+        $stock = $this->repo->getStockRow($productId)->withReceipt($qty);
+
 
         $this->projection->set($productId, [
-            'on_hand' => $onHand,
-            'reserved' => $reserved,
-            'available' => $available,
+            'on_hand' => $stock->onHand(),
+            'reserved' => $stock->reserved(),
+            'available' => $stock->available(),
             'updated_at' => date('c')
         ]);
 
-        if ($available > 1000) {
+        if ($stock->available() > 1000) {
             $this->mailer->send(
                 'supply@company.local',
                 'High stock for product ' . $productId,
-                'Available: ' . $available
+                'Available: ' . $stock->available()
             );
         }
 
-        return [
-            'product_id' => $productId,
-            'received' => $qty,
-            'available' => $available,
-        ];
+        return $stock;
     }
 
     /**
@@ -68,14 +62,10 @@ class InventoryService
     public function reserveProduct(int $productId, int $qty, string $customerId): array
     {
         if ($qty < 1) {
-            throw new \InvalidArgumentException('qty');
+            throw new InvalidArgumentException('qty');
         }
 
         $stock = $this->repo->getStockRow($productId);
-        if (!$stock) {
-            $this->pdo->exec("INSERT INTO products(id, name) VALUES ($productId, 'AUTOCREATED')");
-            $stock = ProductStock::empty();
-        }
         $available = $stock->available();
 
         if ($available < $qty) {

@@ -6,16 +6,21 @@ namespace Freyr\TDD\Domain;
 
 final class ProductStock
 {
-    public function __construct(private int $onHand, private int $reserved)
+    public function __construct(private int $productId, private int $onHand, private int $reserved)
     {
         if ($this->onHand < 0 || $this->reserved < 0) {
             throw new \InvalidArgumentException('Stock values must be non-negative');
         }
     }
 
-    public static function empty(): self
+    public static function empty(int $productId): self
     {
-        return new self(0, 0);
+        return new self($productId, 0, 0);
+    }
+
+    public function productId(): int
+    {
+        return $this->productId;
     }
 
     public function onHand(): int
@@ -38,6 +43,6 @@ final class ProductStock
         if ($qty <= 0) {
             throw new \InvalidArgumentException('qty must be positive');
         }
-        return new self($this->onHand + $qty, $this->reserved);
+        return new self($this->productId, $this->onHand + $qty, $this->reserved);
     }
 }
