@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 final class CesarCipherTest extends TestCase
 {
     #[Test]
+    #[DataProvider('dataProvider')]
     public function testZmienNazwePozdro(string $inputText, int $offset, string $result): void
     {
         /*
