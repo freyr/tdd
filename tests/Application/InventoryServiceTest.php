@@ -17,60 +17,92 @@ final class InventoryServiceTest extends TestCase
 {
     public function testReceiveProductReturnsErrorOnNonPositiveQty(): void
     {
-        $fakes = $this->makeFakes();
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $repo = $this->createStub(StockRepository::class);
+        $projection = $this->createMock(StockProjection::class);
+        $mailer = $this->createMock(EmailNotifier::class);
+        $pdo = $this->createMock(PDO::class);
+        $redis = $this->createStub(Redis::class);
+
+        $pdo->expects($this->never())->method('exec');
+        $projection->expects($this->never())->method('set');
+        $mailer->expects($this->never())->method('send');
+
+        $svc = new InventoryService($repo, $projection, $mailer, $pdo, $redis, new Clock());
 
         $result = $svc->receiveProduct(10, 0, 'PZ/1');
 
         $this->assertSame(['error' => 'Qty must be positive'], $result);
-        $this->assertCount(0, $fakes['pdo']->execLog); // no DB side-effects
-        $this->assertCount(0, $fakes['mailer']->sent);
     }
 
     public function testReceiveProductUpdatesProjectionAndDoesNotEmailWhenAvailableIsAtMost1000(): void
     {
-        $fakes = $this->makeFakes();
-        $fakes['repo']->row = ['on_hand' => 900, 'reserved' => 100]; // available before = 800
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $repo = $this->createStub(StockRepository::class);
+        $repo->method('getStockRow')->willReturn(['on_hand' => 900, 'reserved' => 100]);
 
-        $res = $svc->receiveProduct(5, 200, 'PZ/2025/09'); // on_hand becomes 1100, available 1000
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects($this->once())
+            ->method('exec')
+            ->with($this->stringContains("RECEIVE:PZ/2025/09"))
+            ->willReturn(1);
 
-        // Return payload
+        $projection = $this->createMock(StockProjection::class);
+        $projection->expects($this->once())
+            ->method('set')
+            ->with(
+                5,
+                $this->callback(function(array $payload) {
+                    $this->assertSame(1100, $payload['on_hand']);
+                    $this->assertSame(100, $payload['reserved']);
+                    $this->assertSame(1000, $payload['available']);
+                    $this->assertArrayHasKey('updated_at', $payload);
+                    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T/', $payload['updated_at']);
+                    return true;
+                })
+            );
+
+        $mailer = $this->createMock(EmailNotifier::class);
+        $mailer->expects($this->never())->method('send');
+
+        $svc = new InventoryService($repo, $projection, $mailer, $pdo, $this->createStub(Redis::class), new Clock());
+
+        $res = $svc->receiveProduct(5, 200, 'PZ/2025/09');
+
         $this->assertSame(5, $res['product_id']);
         $this->assertSame(200, $res['received']);
         $this->assertSame(1000, $res['available']);
-
-        // SQL executed
-        $this->assertNotEmpty($fakes['pdo']->execLog);
-        $this->assertStringContainsString("INSERT INTO stock_movements", $fakes['pdo']->execLog[0]);
-        $this->assertStringContainsString("RECEIVE:PZ/2025/09", $fakes['pdo']->execLog[0]);
-
-        // Projection updated
-        $stored = $fakes['projection']->store[5] ?? null;
-        $this->assertIsArray($stored);
-        $this->assertSame(1100, $stored['on_hand']);
-        $this->assertSame(100, $stored['reserved']);
-        $this->assertSame(1000, $stored['available']);
-        $this->assertArrayHasKey('updated_at', $stored);
-        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T/', $stored['updated_at']); // ISO-ish
-
-        // No email when available <= 1000
-        $this->assertCount(0, $fakes['mailer']->sent);
     }
 
     public function testReceiveProductSendsEmailWhenAvailableExceeds1000(): void
     {
-        $fakes = $this->makeFakes();
-        $fakes['repo']->row = ['on_hand' => 1000, 'reserved' => 0];
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $repo = $this->createStub(StockRepository::class);
+        $repo->method('getStockRow')->willReturn(['on_hand' => 1000, 'reserved' => 0]);
 
-        $svc->receiveProduct(7, 1, 'PZ/2'); // available -> 1001
+        $projection = $this->createMock(StockProjection::class);
+        $projection->expects($this->once())
+            ->method('set')
+            ->with(
+                7,
+                $this->callback(function(array $payload) {
+                    $this->assertSame(1001, $payload['available']);
+                    return true;
+                })
+            );
 
-        $this->assertCount(1, $fakes['mailer']->sent);
-        [$to, $subject, $body] = $fakes['mailer']->sent[0];
-        $this->assertSame('supply@company.local', $to);
-        $this->assertStringContainsString('product 7', $subject);
-        $this->assertStringContainsString('Available: 1001', $body);
+        $mailer = $this->createMock(EmailNotifier::class);
+        $mailer->expects($this->once())
+            ->method('send')
+            ->with(
+                'supply@company.local',
+                $this->stringContains('product 7'),
+                $this->stringContains('Available: 1001')
+            );
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('exec')->willReturn(1);
+
+        $svc = new InventoryService($repo, $projection, $mailer, $pdo, $this->createStub(Redis::class), new Clock());
+
+        $svc->receiveProduct(7, 1, 'PZ/2');
     }
 
     public function testReserveProductThrowsWhenQtyLessThanOne(): void
@@ -78,32 +110,55 @@ final class InventoryServiceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('qty');
 
-        $fakes = $this->makeFakes();
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $svc = new InventoryService(
+            $this->createStub(StockRepository::class),
+            $this->createStub(StockProjection::class),
+            $this->createStub(EmailNotifier::class),
+            $this->createStub(PDO::class),
+            $this->createStub(Redis::class),
+            new Clock()
+        );
+
         $svc->reserveProduct(5, 0, 'cust-1');
     }
 
     public function testReserveProductCreatesReservationWhenEnoughAvailable(): void
     {
-        $fakes = $this->makeFakes();
-        $fakes['repo']->row = ['on_hand' => 10, 'reserved' => 2]; // available = 8
-        $fakes['pdo']->lastInsertIdValue = '42';
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $repo = $this->createStub(StockRepository::class);
+        $repo->method('getStockRow')->willReturn(['on_hand' => 10, 'reserved' => 2]);
+
+        $projection = $this->createMock(StockProjection::class);
+        $projection->method('get')->willReturn([]);
+        $projection->expects($this->once())
+            ->method('set')
+            ->with(
+                9,
+                $this->callback(function(array $payload) {
+                    $this->assertSame(5, $payload['reserved']);
+                    $this->assertSame(-5, $payload['available']);
+                    return true;
+                })
+            );
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('lastInsertId')->willReturn('42');
+        $execLog = [];
+        $pdo->expects($this->exactly(2))
+            ->method('exec')
+            ->willReturnCallback(function(string $sql) use (&$execLog) {
+                $execLog[] = $sql;
+                return 1;
+            });
+
+        $svc = new InventoryService($repo, $projection, $this->createStub(EmailNotifier::class), $pdo, $this->createStub(Redis::class), new Clock());
 
         $out = $svc->reserveProduct(9, 5, 'C-123');
 
-        // SQL calls
-        $this->assertCount(2, $fakes['pdo']->execLog);
-        $this->assertStringContainsString("INSERT INTO reservations", $fakes['pdo']->execLog[0]);
-        $this->assertStringContainsString("product_id, customer_id, qty, status", $fakes['pdo']->execLog[0]);
-        $this->assertStringContainsString("UPDATE stock_agg SET reserved = reserved + 5 WHERE product_id = 9", $fakes['pdo']->execLog[1]);
+        $this->assertCount(2, $execLog);
+        $this->assertStringContainsString('INSERT INTO reservations', $execLog[0]);
+        $this->assertStringContainsString('product_id, customer_id, qty, status', $execLog[0]);
+        $this->assertStringContainsString('UPDATE stock_agg SET reserved = reserved + 5 WHERE product_id = 9', $execLog[1]);
 
-        // Projection was updated based on previous empty state
-        $updated = $fakes['projection']->store[9] ?? [];
-        $this->assertSame(5, $updated['reserved']);
-        $this->assertSame(-5, $updated['available']); // current behavior uses proj on_hand (0) minus reserved
-
-        // Return payload
         $this->assertSame('reserved', $out['status']);
         $this->assertSame(9, $out['product_id']);
         $this->assertSame(5, $out['qty']);
@@ -113,91 +168,65 @@ final class InventoryServiceTest extends TestCase
 
     public function testReserveProductReturnsErrorWhenInsufficientAndCacheNotEnough(): void
     {
-        $fakes = $this->makeFakes();
-        $fakes['repo']->row = ['on_hand' => 3, 'reserved' => 3]; // available = 0
-        $fakes['redis']->hashes['stock:11'] = ['available' => 2]; // cache not enough for qty=5
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $repo = $this->createStub(StockRepository::class);
+        $repo->method('getStockRow')->willReturn(['on_hand' => 3, 'reserved' => 3]);
+
+        $redis = $this->createMock(Redis::class);
+        $redis->expects($this->once())
+            ->method('hGetAll')
+            ->with('stock:11')
+            ->willReturn(['available' => 2]);
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects($this->never())->method('exec');
+
+        $svc = new InventoryService($repo, $this->createStub(StockProjection::class), $this->createStub(EmailNotifier::class), $pdo, $redis, new Clock());
 
         $out = $svc->reserveProduct(11, 5, 'C-555');
 
         $this->assertSame(['error' => 'Not enough stock', 'available' => 0], $out);
-        $this->assertCount(0, $fakes['pdo']->execLog); // no DB writes
     }
 
     public function testReserveProductFallsBackToCacheWhenInsufficientButCacheHasEnough(): void
     {
-        $fakes = $this->makeFakes();
-        $fakes['repo']->row = ['on_hand' => 3, 'reserved' => 3]; // available = 0
-        $fakes['redis']->hashes['stock:12'] = ['available' => 10, 'on_hand' => 10, 'reserved' => 0];
-        $fakes['pdo']->lastInsertIdValue = '777';
-        $svc = new InventoryService($fakes['repo'], $fakes['projection'], $fakes['mailer'], $fakes['pdo'], $fakes['redis'], $fakes['clock']);
+        $repo = $this->createStub(StockRepository::class);
+        $repo->method('getStockRow')->willReturn(['on_hand' => 3, 'reserved' => 3]);
+
+        $redis = $this->createMock(Redis::class);
+        $redis->expects($this->once())
+            ->method('hGetAll')
+            ->with('stock:12')
+            ->willReturn(['available' => 10, 'on_hand' => 10, 'reserved' => 0]);
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('lastInsertId')->willReturn('777');
+        $execLog = [];
+        $pdo->expects($this->exactly(2))
+            ->method('exec')
+            ->willReturnCallback(function(string $sql) use (&$execLog) {
+                $execLog[] = $sql;
+                return 1;
+            });
+
+        $projection = $this->createMock(StockProjection::class);
+        $projection->method('get')->willReturn([]);
+        $projection->expects($this->once())
+            ->method('set')
+            ->with(
+                12,
+                $this->callback(function(array $payload) {
+                    $this->assertSame(4, $payload['reserved']);
+                    $this->assertSame(-4, $payload['available']);
+                    return true;
+                })
+            );
+
+        $svc = new InventoryService($repo, $projection, $this->createStub(EmailNotifier::class), $pdo, $redis, new Clock());
 
         $out = $svc->reserveProduct(12, 4, 'ACME');
 
-        // Should proceed with reservation (no early error)
         $this->assertSame('reserved', $out['status']);
         $this->assertSame('777', $out['reservation_id']);
-
-        // Two SQL statements executed
-        $this->assertCount(2, $fakes['pdo']->execLog);
-
-        // Projection updated based on previous projection state (which is empty by default)
-        $updated = $fakes['projection']->store[12] ?? [];
-        $this->assertSame(4, $updated['reserved']);
-        $this->assertSame(-4, $updated['available']);
-    }
-
-    /**
-     * Helpers: make fakes for dependencies capturing current behavior contracts.
-     * These fakes implement minimal surface used by InventoryService.
-     */
-    private function makeFakes(): array
-    {
-        $pdo = new class extends PDO {
-            public array $execLog = [];
-            public string $lastInsertIdValue = '';
-            public function __construct() { /* no parent */ }
-            public function exec(string $statement): int|false { $this->execLog[] = $statement; return 1; }
-            public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): \PDOStatement|false { return false; }
-            public function lastInsertId(?string $name = null): string|false { return $this->lastInsertIdValue ?: '0'; }
-        };
-
-        $redis = new class extends Redis {
-            public array $hashes = [];
-            public array $expires = [];
-            public function __construct() { /* no parent */ }
-            public function hMset($key, $hash): bool { $this->hashes[$key] = array_merge($this->hashes[$key] ?? [], $hash); return true; }
-            public function hGetAll($key): array { return $this->hashes[$key] ?? []; }
-            public function expire(string $key, int $timeout, ?string $mode = null): bool { $this->expires[$key] = $timeout; return true; }
-        };
-
-        $projection = new class($redis) extends StockProjection {
-            public array $store = [];
-            public function __construct(private Redis $fakeRedis) {}
-            public function set(int $productId, array $payload): void { $this->store[$productId] = $payload; /* deterministic, no TTL */ }
-            public function get(int $productId): array { return $this->store[$productId] ?? []; }
-        };
-
-        $repo = new class(new class extends PDO { public function __construct(){} }) extends StockRepository {
-            public ?array $row = null;
-            public function __construct(private PDO $fakePdo) { /* don't call parent */ }
-            public function getStockRow(int $productId): ?array { return $this->row; }
-        };
-
-        $mailer = new class extends EmailNotifier {
-            public array $sent = [];
-            public function send(string $to, string $subject, string $body): void { $this->sent[] = [$to, $subject, $body]; }
-        };
-
-        $clock = new Clock();
-
-        return [
-            'pdo' => $pdo,
-            'redis' => $redis,
-            'projection' => $projection,
-            'repo' => $repo,
-            'mailer' => $mailer,
-            'clock' => $clock,
-        ];
+        $this->assertCount(2, $execLog);
     }
 }
