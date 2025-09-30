@@ -19,7 +19,7 @@ class WordWrapTest extends TestCase
 
     public static function wordWrapDataProvider(): Generator
     {
-        yield ['a', 'a', 1];
+        yield ['word\nword', 'word word', 6];
+        yield ['wordword', 'wordwo rd', 6];
     }
-
 }
