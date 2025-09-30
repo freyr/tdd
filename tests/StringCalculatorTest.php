@@ -8,6 +8,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use TDD\StringCalculator\StringCalculator;
 
 class StringCalculatorTest extends TestCase
 {

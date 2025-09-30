@@ -10,13 +10,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Freyr\\TDD\\": "src/"
+            "TDD\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Freyr\\TDD\\Tests\\": "tests/"
+            "TDD\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "run-tests": "php vendor/bin/phpunit --testdox"
     },
     "minimum-stability": "stable",
     "license": "MIT"
