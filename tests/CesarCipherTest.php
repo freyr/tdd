@@ -22,5 +22,6 @@ class CesarCipherTest extends TestCase
     public static function data(): Generator
     {
         yield 'abc_shift' => ['abc', 3, 'def'];
+        yield 'abc_shift' => ['ABC', 5, 'FGH'];
     }
 }
