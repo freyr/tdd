@@ -17,6 +17,7 @@ final class WordWrapTest extends TestCase
         yield ['asddasddasdd', 4, 'asdd\nasdd\nasdd'];
         yield ['asd', 3, 'asd'];
         yield ['', 1, ''];
+        yield ['word word', 6, 'word\nword'];
     }
 
     #[DataProvider('wordWrapDataProvider')]
