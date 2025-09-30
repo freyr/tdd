@@ -28,5 +28,6 @@ class CesarCipherTest extends TestCase
         yield ['Attack at dawn!', 1, 'Buubdl bu ebxo!'];
         // The shift can be any integer, including negative values.
         yield ['Hello, World!', -5, 'Czggj, Rjmgy!'];
+        yield ['ABC', 52, 'ABC'];
     }
 }
