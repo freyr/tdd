@@ -10,6 +10,9 @@ class WordWrap
 {
     public function wrap(string $text, int $width): string
     {
+        if ($width === 0) {
+            throw new \InvalidArgumentException();
+        }
         $strLength = mb_strlen($text);
         $result = '';
         $position = $width;
