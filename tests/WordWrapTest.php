@@ -25,6 +25,8 @@ class WordWrapTest extends TestCase
         yield ['wordwo\nrd', 'wordword', 6];
         yield ['abcd\nefgh\nij', 'abcdefghij', 4];
         yield ['a\n b c', 'a b c', 3]; // Przy łamaniu na spacji skonsumuj wszystkie sąsiadujące spacje w miejscu podziału (żeby nie było końcowych/początkowych spacji na liniach). Poza miejscem łamania zachowuj oryginalne spacje (nie kompresuj).
+        // Ustawiaj \n w pierwszej spacji napotkanej. "Utnij przykład na 3 literze. Czyli mamy 'a b' oraz ' c'.
+        //Czyli powinno nie brać pod uwagę spacji w miejscu ucięcia. np 'b ' lub ' c'. Ale powinno je wypisać w zwrotce
         yield ['foo\nbar\nbaz', 'foo\nbar baz', 5];
     }
 
