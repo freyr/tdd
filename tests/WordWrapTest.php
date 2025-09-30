@@ -27,4 +27,5 @@ class WordWrapTest extends TestCase
         yield ['a\n b c', 'a b c', 3]; // Przy łamaniu na spacji skonsumuj wszystkie sąsiadujące spacje w miejscu podziału (żeby nie było końcowych/początkowych spacji na liniach). Poza miejscem łamania zachowuj oryginalne spacje (nie kompresuj).
         yield ['foo\nbar\nbaz', 'foo\nbar baz', 5];
     }
+
 }
