@@ -23,5 +23,7 @@ class CesarCipherTest extends TestCase
     {
         yield ['ABC', 3, 'DEF'];
         yield ['xyz', 3, 'abc'];
+        // Leave national characters (e.g. ąęźć) and special ones (e.g. !%$) unchanged
+        yield ['Attack at dawn!', 1, 'Buubdl bu ebxo!'];
     }
 }
