@@ -2,15 +2,18 @@
 
 namespace Freyr\TDD\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Freyr\TDD\WordWrap;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class WordWrapTest extends TestCase
 {
     #[Test]
+    #[DataProvider('data')]
     public function testWordWrap(string $text, int $width): void
     {
-        $w = new WordWrapTest();
+        $w = new WordWrap();
         $this->assertEquals(strlen($w->wrap($text, $width)), $width);
     }
 

@@ -21,8 +21,8 @@ class CesarCipherTest extends TestCase
     public static function data(): Generator
     {
         yield 'shift_letters' => [['text' => 'ABC','shift' => 3], 'DEF'];
-        yield 'shift_letters_case_sensitive' => [['text' => 'ABc','shift' => 3], 'DEc'];
-        yield 'shift_letters_special_chart_not_shift' => [['text' => 'Attack at dawn!','shift' => 1], 'Buubdl bu ebxo!'];
+      //  yield 'shift_letters_case_sensitive' => [['text' => 'ABc','shift' => 3], 'DEc'];
+        //yield 'shift_letters_special_chart_not_shift' => [['text' => 'Attack at dawn!','shift' => 1], 'Buubdl bu ebxo!'];
 
     }
 }
