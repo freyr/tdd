@@ -128,13 +128,13 @@ final class DiscountCalculatorTest extends TestCase
             'expectedPrice' => 40.0,
         ];
 
-        yield 'Christmas Eve after VIP floor can go negative' => [
+        yield 'Christmas Eve after VIP floor cannot go negative' => [
             'subtotal' => 30.0,
             'customerType' => 'VIP',
             'date' => '2025-12-24',
             'coupon' => null,
             'firstOrder' => false,
-            'expectedPrice' => -10.0,
+            'expectedPrice' => 0.0,
         ];
 
         yield 'Order coupon then VIP threshold' => [

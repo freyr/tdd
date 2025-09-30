@@ -48,6 +48,8 @@ final class DiscountCalculator
             $p = $p - 10;
         }
 
+        if ($p < 0) $p = 0;
+
         return $p;
     }
 }
