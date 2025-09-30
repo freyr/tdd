@@ -31,9 +31,7 @@ class InventoryService
             return ['error' => 'Qty must be positive'];
         }
 
-        $this->pdo->exec(
-            "INSERT INTO stock_movements(product_id, change_qty, source, created_at) VALUES ($productId, $qty, 'RECEIVE:$docNo', NOW())"
-        );
+        $this->repo->receiveProduct($productId, $qty, $docNo);
 
         $row = $this->repo->getStockRow($productId);
         $onHand = (int)($row['on_hand'] ?? 0) + $qty;

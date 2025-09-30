@@ -28,6 +28,11 @@ class StockRepository
         $this->pdo->exec("INSERT INTO stock_movements(product_id, change_qty, source, created_at) VALUES ($productId, $qty, 'REPO_INCREASE', NOW())");
     }
 
+    public function receiveProduct(int $productId, int $qty, string $docNo): void
+    {
+        $this->pdo->exec("INSERT INTO stock_movements(product_id, change_qty, source, created_at) VALUES ($productId, $qty, 'RECEIVE:'. $docNo, NOW())");
+    }
+
     /** Dodaje produkt jeśli nie istnieje (cisza jeśli błąd) */
     public function ensureProduct(int $id, string $name = 'AUTO'): void
     {
