@@ -27,5 +27,6 @@ class WordWrapTest extends TestCase
         yield 'return_empty_when_no_word_given' => ['', 4, ''];
         yield 'return_word_when_shorter_than_width' => ['test', 5, 'test'];
         yield 'wrap_word_after_white_space' => ['word word', 6, 'word\nword'];
+        yield 'wrap_word_after_white_space' => ['foo\nbar baz', 5, 'foo\nbar\nbaz'];
     }
 }
