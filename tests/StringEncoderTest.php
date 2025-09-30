@@ -36,6 +36,12 @@ class StringEncoderTest extends TestCase
             'shift' => -5,
             'expected' => 'Czggj, Rjmgy!',
         ];
+
+        yield [
+            'input' => 'Hello, World!',
+            'shift' => 53,
+            'expected' => 'Ifmmp, Xpsme!',
+        ];
     }
 
     #[DataProvider('stringEncoderDataProvider')]
