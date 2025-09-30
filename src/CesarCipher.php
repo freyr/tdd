@@ -10,10 +10,12 @@ class CesarCipher
     {
         $result = '';
         foreach (str_split($text) as $letter) {
-            $ASCIIFirstLetter = ord($letter);
-            $ASCIIFirstLetter += $shift;
-            $letterFromShiftedASCII = chr($ASCIIFirstLetter);
-            $result .= $letterFromShiftedASCII;
+            if (ctype_alpha($letter)) {
+                $ASCIIFirstLetter = ord($letter);
+                $ASCIIFirstLetter += $shift;
+                $letterFromShiftedASCII = chr($ASCIIFirstLetter);
+                $result .= $letterFromShiftedASCII;
+            } else $result .= $letter;
         }
 
         return $result;
