@@ -8,6 +8,6 @@ final class WrapperService implements WrapperServiceInterface
 {
     public function wrap(string $text, int $width): string
     {
-        // TODO: Implement wrap() method.
+        return wordwrap($text, $width, PHP_EOL);
     }
 }
