@@ -24,5 +24,6 @@ class WordWrapTest extends TestCase
     {
         yield 'wrap_1' => ["word word", 6, "word\nword"];
         yield 'wrap_2' => ["abcdefghij", 4, "abcd\nefgh\nij"];
+        yield 'wrap_3' => ["", 4, ""];
     }
 }
