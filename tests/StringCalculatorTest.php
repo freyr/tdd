@@ -28,7 +28,7 @@ class StringCalculatorTest extends TestCase
         // Header line can redefine the separator
         // This info can be shared with a driver as comment if necessary
         yield 'custom_separator_also_sums_numbers' => ['//;\n3;10', 13];
-        // Additional info: custom separator can be any string
+        // Additional info: custom separator can be any string, [ and ] are the boundary of the separator (they are not included into separator itself)
         yield 'custom_separator_longer_than_one_char' => ['//[***]\n4***10', 14];
         // Additional info: custom separator can be any string
         // \n is another default separator
