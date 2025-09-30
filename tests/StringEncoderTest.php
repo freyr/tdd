@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Tests;
 
+use Freyr\TDD\StringEncoder;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -28,6 +29,12 @@ class StringEncoderTest extends TestCase
             'input' => 'Attack at dawn!',
             'shift' => 1,
             'expected' => 'Buubdl bu ebxo!',
+        ];
+
+        yield [
+            'input' => 'Hello, World!',
+            'shift' => -5,
+            'expected' => 'Czggj, Rjmgy!',
         ];
     }
 
