@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Freyr\TDD\Tests;
 
-use Freyr\TDD\CesarCipher;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -24,5 +23,6 @@ class CesarCipherTest extends TestCase
     {
         yield 'abc_shift' => ['abc', 3, 'def'];
         yield 'ABC_shift' => ['ABC', 5, 'FGH'];
+        yield 'negative_shift' => ['tESt', -1, 'sDRs'];
     }
 }
