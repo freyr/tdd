@@ -17,6 +17,6 @@ class WordWrapTest extends TestCase
     public static function data(): \Generator
     {
         return
-            yield 'number_of_enter' => ['\n', 3];
+            yield 'number_of_sign_in_line' => ['A', 3];
     }
 }
